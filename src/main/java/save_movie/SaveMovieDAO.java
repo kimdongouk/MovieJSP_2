@@ -1,5 +1,6 @@
 package save_movie;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -127,17 +128,47 @@ public class SaveMovieDAO extends JDBConnect{
 		return totalCount;		
 	}
 
-    public int insertSaveMovie(Map<String, Object> map) {
-    	int i = 0;
+    public void insertSaveMovie(Map<String, Object> map) {
 		String sql = " insert into save_movie values(?,?) ";
 		try {
 			psmt = con.prepareStatement(sql);
 			psmt.setString(1, (String)map.get("user_id"));
-			psmt.setInt(2, (int)map.get("movie_id"));
-			i = psmt.executeUpdate();
+//			psmt.setString(2, (String)map.get("movie_id"));
+			psmt.setInt(2, Integer.parseInt((String)map.get("movie_id")));
+			psmt.executeUpdate();
+			System.out.println("추가");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	return i;
+    }
+
+    public void deleteSaveMovie(Map<String, Object> map) {
+    	String sql = " delete from save_movie where user_id = ? and movie_id = ? ";
+    	try {
+			psmt = con.prepareStatement(sql);
+			psmt.setString(1, (String)map.get("user_id"));
+			psmt.setString(2, (String)map.get("movie_id"));
+			psmt.executeUpdate();
+			System.out.println("삭제");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public int checkLike(Map<String, Object> map) {
+    	int check = 0;
+    	String sql = " select * from save_movie where user_id = ? and movie_id = ? ";
+    	try {
+			psmt = con.prepareStatement(sql);
+			psmt.setString(1, (String)map.get("user_id"));
+			psmt.setString(2, (String)map.get("movie_id"));
+			rs = psmt.executeQuery();
+			if(rs.next()) {
+				check = 1;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	return check;
     }
 }

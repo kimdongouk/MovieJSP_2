@@ -1,6 +1,9 @@
 package movie;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+
+import save_movie.SaveMovieDAO;
 
 /**
  * Servlet implementation class MovieInfoSummary
@@ -34,16 +39,27 @@ public class MovieInfoSummary extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int result;
-		MovieDAO dao = new MovieDAO();
+		SaveMovieDAO dao = new SaveMovieDAO();
 		String user_id = request.getParameter("user_id");
 		String movie_id = request.getParameter("movie_id");
-		result = dao.insertSaveMovie(user_id, movie_id);
+		int check = Integer.parseInt(request.getParameter("check"));
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("user_id", user_id);
+		map.put("movie_id", movie_id);
+		
+		if(check == 1) {
+			dao.deleteSaveMovie(map);
+			check = 0;
+		}else {
+			dao.insertSaveMovie(map);
+			check = 1;
+		}
 		
 		// JSON 형태로 데이터를 반환
 		response.setContentType("text/plain");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(result);
+		response.getWriter().write(String.valueOf(check));
 
 	}
 

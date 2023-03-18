@@ -14,7 +14,6 @@ public class LoginController extends HttpServlet {
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Login doGet()");
-		
 		//로그아웃 처리
 		HttpSession session = request.getSession();
 		//System.out.println(session.getAttribute("UserId"));
@@ -47,7 +46,6 @@ public class LoginController extends HttpServlet {
 		
 		if(dto.getUser_id() != null) {
 			//로그인 정보와 DB 정보가 일치
-			
 			//그런데 로그인 실패 5번 이상 했을 경우 로그인 정보와 DB 정보가 일치하더라도 로그인 불가
 			if(dto.getUser_id().equals((String)session.getAttribute("fail_id")) && (int)session.getAttribute("fail_cnt") >= 5){
 				msg = "<script>alert('로그인 실패 5회 초과하여 이용 불가합니다! 고객센터에 문의하세요')</script>";
